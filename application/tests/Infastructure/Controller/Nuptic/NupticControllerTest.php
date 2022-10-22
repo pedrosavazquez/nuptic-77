@@ -36,6 +36,8 @@ class NupticControllerTest extends TestCase
         $response = $this->runValidRequest($requestData);
         $content = json_decode($response->getContent(), associative: true);
         self::assertArrayHasKey('data', $content);
+        self::assertArrayHasKey('id', $content['data']);
+        self::assertTrue(Uuid::isValid($content['data']['id']));
     }
 
     public function testMustFailIfCommandBusFails(): void
