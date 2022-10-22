@@ -7,7 +7,7 @@ namespace App\Infrastructure\Controller\Nuptic;
 
 use App\Application\Shared\Bus\Command\CommandBus;
 use App\Application\Nuptic\Command\RegisterNupticCommand;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Exception;use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 final class NupticController
@@ -18,9 +18,23 @@ final class NupticController
     {
         $contentType = $request->headers->get('Content-type');
         if ('application/json' !== $contentType) {
-            throw new RequestNotValid();
+            throw RequestNotValid::fromContentType($contentType);
         }
-        $this->commandBus->execute(new RegisterNupticCommand());
+        $contentBody = json_decode($request->getContent(), true, JSON_THROW_ON_ERROR, 512);
+
+        try{
+            $command=new RegisterNupticCommand(
+                $contentBody['simulator_id'],
+                $contentBody['num'],
+                $contentBody['direction'],
+                $contentBody['route'],
+            );
+        }catch(Exception){
+            throw RequestNotValid::forBodyContent();
+        }
+
+
+        $this->commandBus->execute($command);
         return new JsonResponse(['data' => []]);
     }
 }

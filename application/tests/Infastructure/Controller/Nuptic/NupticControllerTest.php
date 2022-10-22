@@ -8,7 +8,7 @@ use App\Application\Shared\Bus\Command\CommandBus;
 use App\Infrastructure\Controller\Nuptic\NupticController;
 use App\Infrastructure\Controller\Nuptic\RequestNotValid;
 use Exception;use PHPUnit\Framework\MockObject\MockObject;use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
+use Ramsey\Uuid\Uuid;use Symfony\Component\HttpFoundation\JsonResponse;use Symfony\Component\HttpFoundation\Request;
 
 class NupticControllerTest extends TestCase
 {
@@ -30,11 +30,10 @@ class NupticControllerTest extends TestCase
         $this->controller->__invoke($request);
     }
 
-    public function testGivenAValidRequestTestMustReturnAJsonResponseWithADataKey(): void
+    /** @dataProvider requestProvider */
+    public function testGivenAValidRequestTestMustReturnAJsonResponseWithADataKey(array $requestData): void
     {
-        $request = new Request();
-        $request->headers->add(['Content-type' => 'application/json']);
-        $response = $this->controller->__invoke($request);
+        $response = $this->runValidRequest($requestData);
         $content = json_decode($response->getContent(), associative: true);
         self::assertArrayHasKey('data', $content);
     }
@@ -46,6 +45,50 @@ class NupticControllerTest extends TestCase
 
         $request = new Request();
         $request->headers->add(['Content-type' => 'application/json']);
+        $data = [
+                'simulator_id' => Uuid::uuid4(),
+                'num' => 1,
+                'direction' => 'East',
+                'route' => 10
+            ];
+        $this->runValidRequest($data);
+    }
+
+    public function testMustFailIfRequestBodyIsIncomplete(): void
+    {
+        $this->expectException(RequestNotValid::class);
+        $this->commandBus->expects(self::never())->method('execute');
+
+        $request = new Request();
+        $request->headers->add(['Content-type' => 'application/json']);
         $this->controller->__invoke($request);
+    }
+
+
+    private function runValidRequest(array $requestContent): JsonResponse
+    {
+        $request = new Request(
+            content: json_encode($requestContent, JSON_THROW_ON_ERROR)
+        );
+        $request->headers->add(['Content-type' => 'application/json']);
+        return $this->controller->__invoke($request);
+    }
+
+    public function requestProvider(): array
+    {
+        return [
+            [
+                ['simulator_id' => Uuid::uuid4(),
+                'num' => 1,
+                'direction' => 'East',
+                'route' => 10]
+            ],
+            [
+                ['simulator_id' => Uuid::uuid4(),
+                'num' => 2,
+                'direction' => 'North',
+                'route' => 20]
+            ]
+        ];
     }
 }
