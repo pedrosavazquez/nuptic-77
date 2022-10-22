@@ -30,18 +30,6 @@ services:
       - backend
     depends_on:
       - db
-  frontend:
-    image: node:lts-alpine3.14
-    working_dir: ${WORKING_DIR}
-    ports:
-      - "${LOCAL_FRONT_PORT}:8081"
-    expose:
-      - "${LOCAL_FRONT_PORT}"
-    environment:
-      - .env
-    volumes:
-      - "${HOST_APP_DIR}:${IMAGE_WORKDIR}"
-    tty: true
   web:
     image: nginx:alpine
     working_dir: ${WORKING_DIR}
@@ -59,12 +47,6 @@ services:
       - db
     networks:
       - backend
-      - frontend
 networks:
-  default:
-    external:
-      name: cqrs-training
   backend:
     name: custom_backend
-  frontend:
-    name: custom_frontend
