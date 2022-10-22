@@ -20,4 +20,14 @@ class NupticControllerTest extends TestCase
         $request->headers->add(['Content-type' => 'text/csv']);
         $controller->__invoke($request);
     }
+
+    public function testGivenAValidRequestTestMustReturnAJsonResponseWithADataKey(): void
+    {
+        $controller = new NupticController();
+        $request = new Request();
+        $request->headers->add(['Content-type' => 'application/json']);
+        $response = $controller->__invoke($request);
+        $content = json_decode($response->getContent(), associative: true);
+        self::assertArrayHasKey('data', $content);
+    }
 }

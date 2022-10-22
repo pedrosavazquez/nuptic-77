@@ -16,6 +16,6 @@ final class NupticController
         if ('application/json' !== $contentType) {
             throw new RequestNotValid();
         }
-        return new JsonResponse();
+        return new JsonResponse(['data' => []]);
     }
 }
