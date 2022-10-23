@@ -21,11 +21,19 @@ final class NupticController
     #[Route('/nuptic77', 'nuptic77', methods: [Request::METHOD_GET])]
     public function __invoke(Request $request): JsonResponse
     {
+        $this->tenPercentOfRequestMustFail();
         $contentType = $request->headers->get('Content-type');
         $this->isValidContentTypeOrFail($contentType);
         $contentBody = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         return $this->runCommand($contentBody);
+    }
+
+    private function tenPercentOfRequestMustFail(): void
+    {
+        if (10 < random_int(1, 100)) {
+            throw new ProgrammedError();
+        }
     }
 
     private function isValidContentTypeOrFail(?string $contentType):void
