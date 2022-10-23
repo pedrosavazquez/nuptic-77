@@ -12,17 +12,28 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class NupticController
 {
-    public function __construct(private readonly CommandBus $commandBus) {}
+    public function __construct(private readonly CommandBus $commandBus)
+    {}
 
     public function __invoke(Request $request): JsonResponse
     {
         $contentType = $request->headers->get('Content-type');
+        $this->isValidContentTypeOrFail($contentType);
+        $contentBody = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+
+        return $this->runCommand($contentBody);
+    }
+
+    public function isValidContentTypeOrFail(?string $contentType):void
+    {
         if ('application/json' !== $contentType) {
             throw RequestNotValid::fromContentType($contentType);
         }
-        $contentBody = json_decode($request->getContent(), true, JSON_THROW_ON_ERROR, 512);
+    }
 
-        try{
+    public function runCommand(mixed $contentBody):JsonResponse
+    {
+        try {
             $id = (string)Uuid::uuid4();
             $command=new RegisterNupticCommand(
                 $id,
@@ -34,7 +45,7 @@ final class NupticController
 
             $this->commandBus->execute($command);
             return new JsonResponse(['data' => ['id' => $id]]);
-        }catch(Exception){
+        } catch (Exception) {
             throw RequestNotValid::forBodyContent();
         }
     }
