@@ -18,7 +18,7 @@ final class NupticController
     public function __construct(private readonly CommandBus $commandBus)
     {}
 
-    #[Route('/nuptic77', 'nuptic77', methods: [Request::METHOD_POST])]
+    #[Route('/nuptic77', 'nuptic77', methods: [Request::METHOD_GET])]
     public function __invoke(Request $request): JsonResponse
     {
         $contentType = $request->headers->get('Content-type');
