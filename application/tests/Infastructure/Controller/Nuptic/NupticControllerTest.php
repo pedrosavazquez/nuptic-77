@@ -7,8 +7,12 @@ namespace App\Tests\Infrastructure\Controller\Nuptic;
 use App\Application\Shared\Bus\Command\CommandBus;
 use App\Infrastructure\Controller\Nuptic\NupticController;
 use App\Infrastructure\Controller\Nuptic\RequestNotValid;
-use Exception;use PHPUnit\Framework\MockObject\MockObject;use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;use Symfony\Component\HttpFoundation\JsonResponse;use Symfony\Component\HttpFoundation\Request;
+use Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class NupticControllerTest extends TestCase
 {
@@ -61,7 +65,7 @@ class NupticControllerTest extends TestCase
         $this->expectException(RequestNotValid::class);
         $this->commandBus->expects(self::never())->method('execute');
 
-        $request = new Request();
+        $request = new Request(content: '[]');
         $request->headers->add(['Content-type' => 'application/json']);
         $this->controller->__invoke($request);
     }

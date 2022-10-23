@@ -7,14 +7,18 @@ namespace App\Infrastructure\Controller\Nuptic;
 
 use App\Application\Shared\Bus\Command\CommandBus;
 use App\Application\Nuptic\Command\RegisterNupticCommand;
-use Exception;use Ramsey\Uuid\Uuid;use Symfony\Component\HttpFoundation\JsonResponse;
+use Exception;
+use Ramsey\Uuid\Uuid;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class NupticController
 {
     public function __construct(private readonly CommandBus $commandBus)
     {}
 
+    #[Route('/nuptic77', 'nuptic77', methods: [Request::METHOD_POST])]
     public function __invoke(Request $request): JsonResponse
     {
         $contentType = $request->headers->get('Content-type');
@@ -24,14 +28,14 @@ final class NupticController
         return $this->runCommand($contentBody);
     }
 
-    public function isValidContentTypeOrFail(?string $contentType):void
+    private function isValidContentTypeOrFail(?string $contentType):void
     {
         if ('application/json' !== $contentType) {
             throw RequestNotValid::fromContentType($contentType);
         }
     }
 
-    public function runCommand(mixed $contentBody):JsonResponse
+    private function runCommand(array $contentBody):JsonResponse
     {
         try {
             $id = (string)Uuid::uuid4();
