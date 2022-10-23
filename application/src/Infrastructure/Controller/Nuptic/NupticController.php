@@ -11,29 +11,25 @@ use Exception;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Annotation\Route;use function random_int;
 
 final class NupticController
 {
-    public function __construct(private readonly CommandBus $commandBus)
+    public function __construct(
+        private readonly CommandBus $commandBus,
+        private readonly FailureProvoker $failureProvoker
+    )
     {}
 
     #[Route('/nuptic77', 'nuptic77', methods: [Request::METHOD_GET])]
     public function __invoke(Request $request): JsonResponse
     {
-        $this->tenPercentOfRequestMustFail();
+        ($this->failureProvoker)();
         $contentType = $request->headers->get('Content-type');
         $this->isValidContentTypeOrFail($contentType);
         $contentBody = json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
 
         return $this->runCommand($contentBody);
-    }
-
-    private function tenPercentOfRequestMustFail(): void
-    {
-        if (10 < random_int(1, 100)) {
-            throw new ProgrammedError();
-        }
     }
 
     private function isValidContentTypeOrFail(?string $contentType):void

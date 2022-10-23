@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Infrastructure\Controller\Nuptic;
 
 use App\Application\Shared\Bus\Command\CommandBus;
-use App\Infrastructure\Controller\Nuptic\NupticController;
+use App\Infrastructure\Controller\Nuptic\FailureProvoker;use App\Infrastructure\Controller\Nuptic\NupticController;
 use App\Infrastructure\Controller\Nuptic\RequestNotValid;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -22,7 +22,8 @@ class NupticControllerTest extends TestCase
     protected function setUp(): void
     {
         $this->commandBus = $this->createMock(CommandBus::class);
-        $this->controller = new NupticController($this->commandBus);
+        $this->failureProvoker = $this->createMock(FailureProvoker::class);
+        $this->controller = new NupticController($this->commandBus, $this->failureProvoker);
     }
 
 
