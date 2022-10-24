@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Infrastructure\Controller\Nuptic;
 
 
-use App\Application\Shared\Bus\Command\CommandBus;
 use App\Application\Nuptic\Command\RegisterNupticCommand;
+use App\Application\Shared\Bus\Command\CommandBus;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;use function random_int;
+use Symfony\Component\Routing\Annotation\Route;
 
 final class NupticController
 {

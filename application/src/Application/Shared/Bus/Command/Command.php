@@ -2,7 +2,9 @@
 
 namespace App\Application\Shared\Bus\Command;
 
-interface Command
+use JsonSerializable;
+
+interface Command extends JsonSerializable
 {
 
 }

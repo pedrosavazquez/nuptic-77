@@ -9,7 +9,8 @@ use App\Application\Nuptic\Command\RegisterNupticCommandHandler;
 use App\Application\Shared\Bus\Event\EventBus;
 use App\Domain\Nuptic\NupticWasCreated;
 use App\Domain\Nuptic\NupticWriteRepository;
-use App\Domain\Shared\Cache\CacheRepository;use Exception;
+use App\Domain\Shared\Cache\CacheRepository;
+use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
@@ -20,7 +21,7 @@ final class RegisterNupticCommandHandlerTest extends TestCase
     private RegisterNupticCommandHandler $handler;
     private MockObject|NupticWriteRepository $nupticRepository;
     private EventBus|MockObject $eventBus;
-    private  MockObject|CacheRepository $cacheRepository;
+    private MockObject|CacheRepository $cacheRepository;
 
     protected function setUp(): void
     {
@@ -49,12 +50,12 @@ final class RegisterNupticCommandHandlerTest extends TestCase
     {
         $this->nupticRepository->expects(self::once())->method('save');
         $this->eventBus->expects(self::once())->method('handleBatch')->with(self::callback(
-            static function(array $events) {
-                if(0 === count($events)) {
+            static function (array $events) {
+                if (0 === count($events)) {
                     return false;
                 }
-                foreach($events as $event) {
-                    if(!$event instanceof NupticWasCreated) {
+                foreach ($events as $event) {
+                    if (!$event instanceof NupticWasCreated) {
                         return false;
                     }
                 }

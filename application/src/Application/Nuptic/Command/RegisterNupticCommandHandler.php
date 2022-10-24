@@ -12,7 +12,9 @@ use App\Domain\Nuptic\Nuptic;
 use App\Domain\Nuptic\NupticId;
 use App\Domain\Nuptic\NupticWriteRepository;
 use App\Domain\Nuptic\Route;
-use App\Domain\Nuptic\SimulatorId;use App\Domain\Shared\Cache\CacheRepository;use DateTimeImmutable;
+use App\Domain\Nuptic\SimulatorId;
+use App\Domain\Shared\Cache\CacheRepository;
+use DateTimeImmutable;
 
 final class RegisterNupticCommandHandler implements CommandHandler
 {
@@ -41,6 +43,6 @@ final class RegisterNupticCommandHandler implements CommandHandler
 
         $date = (new DateTimeImmutable())->format('Ymd');
         $this->cacheRepository->incr(self::CACHE_KEY.$date);
-        $this->eventBus->handleBatch($nuptic->events);
+        $this->eventBus->handleBatch($nuptic->getEvents());
     }
 }
