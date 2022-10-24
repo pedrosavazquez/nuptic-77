@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Persistence\Doctrine\CustomType;
 
-use App\Domain\Nuptic\NupticId;use Doctrine\DBAL\Platforms\AbstractPlatform;use Ramsey\Uuid\Uuid;use Ramsey\Uuid\UuidInterface;final class NupticIdType
+use App\Domain\Nuptic\NupticId;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Types\Type;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
+
+final class NupticIdType extends Type
 {
     public const NAME = 'nupticId';
 
@@ -30,7 +36,7 @@ use App\Domain\Nuptic\NupticId;use Doctrine\DBAL\Platforms\AbstractPlatform;use 
         return $uuidEntity::fromString($value);
     }
 
-    protected function getUuidEntity(): string
+    private function getUuidEntity(): string
     {
         return NupticId::class;
     }
@@ -41,6 +47,13 @@ use App\Domain\Nuptic\NupticId;use Doctrine\DBAL\Platforms\AbstractPlatform;use 
             return null;
         }
 
-        return (string) $value;
+        return (string)$value;
     }
+
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): int|string
+    {
+        return $platform->getVarcharDefaultLength();
+    }
+
+
 }

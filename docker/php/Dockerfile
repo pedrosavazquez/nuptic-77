@@ -25,7 +25,7 @@ RUN pecl install xdebug redis && docker-php-ext-enable xdebug redis
 RUN apt update \
     && apt install -y mariadb-client \
     && apt clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/* \
-    && docker-php-ext-install mysqli pdo pdo_mysql pdo_pgsql
+    && docker-php-ext-install intl gd mbstring mysqli pdo pdo_mysql pdo_pgsql
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer;
 

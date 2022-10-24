@@ -5,12 +5,11 @@
                           https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <entity name="App\Domain\Nuptic\Nuptic" table="nuptic">
-        <id name="id" type="nupticId" column="id" length="36"/>
+        <id name="nupticId" type="string" column="id" length="36"/>
         <field name="simulatorId" column="simulator_id" length="255" />
-        <field name="num" column="num" type="int" />
-        <field name="direction" column="direction" length="100"/>
-        <field name="route" column="route" type="int"/>
-        <field name="location" column="location" length="100"/>
+        <field name="num" column="num" type="integer" />
+        <field name="direction" column="direction" length="5"/>
+        <field name="route" column="route" type="integer"/>
         <field name="createdAt" column="created_at" type="date_immutable"/>
     </entity>
 </doctrine-mapping>
