@@ -1,0 +1,18 @@
+snc_redis:
+    clients:
+        default:
+            type: phpredis
+            alias: default
+            dsn: '%env(REDIS_URL)%'
+        session:
+            type: phpredis
+            alias: session
+            dsn: '%env(REDIS_URL)%'
+            options:
+                prefix: session_
+        db:
+            type: phpredis
+            alias: db
+            dsn: '%env(REDIS_URL)%'
+            options:
+                prefix: _db
