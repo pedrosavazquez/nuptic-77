@@ -1,10 +1,11 @@
 #get request to simulator endpoint
+#@no-log
 GET http://localhost:8080/nuptic-77
 Content-Type: application/json
 
 {
-  "simulator_id": {{$uuid}},
+  "simulator_id": "{{$uuid}}",
   "num": 1,
-  "direection": "East",
+  "direction": "East",
   "route": 10
 }
