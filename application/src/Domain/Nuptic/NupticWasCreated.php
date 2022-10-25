@@ -8,8 +8,16 @@ use App\Domain\Shared\Bus\Event\DomainEvent;
 
 final class NupticWasCreated implements DomainEvent
 {
-    public static function fromNuptic(Nuptic $nuptic): self
+    public function __construct(
+        public readonly string $simulatorId,
+        public readonly int $num,
+        public readonly string $direction,
+        public readonly int $route
+    ) {
+    }
+
+    public static function fromNuptic(NupticWasCreatedRepresentation $nuptic): self
     {
-        return new self();
+        return new self($nuptic->simulatorId(), $nuptic->num(), $nuptic->direction(), $nuptic->route());
     }
 }

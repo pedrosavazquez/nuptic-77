@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Tests\Infrastructure\Controller\Nuptic;
 
 use App\Application\Shared\Bus\Command\CommandBus;
-use App\Infrastructure\Controller\Nuptic\FailureProvoker;use App\Infrastructure\Controller\Nuptic\NupticController;
+use App\Infrastructure\Controller\Nuptic\FailureProvoker;
+use App\Infrastructure\Controller\Nuptic\NupticController;
 use App\Infrastructure\Controller\Nuptic\RequestNotValid;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -16,8 +17,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class NupticControllerTest extends TestCase
 {
-    private  NupticController $controller;
-    private  MockObject|CommandBus $commandBus;
+    private NupticController $controller;
+    private MockObject|CommandBus $commandBus;
 
     protected function setUp(): void
     {
@@ -53,11 +54,11 @@ class NupticControllerTest extends TestCase
         $request = new Request();
         $request->headers->add(['Content-type' => 'application/json']);
         $data = [
-                'simulator_id' => Uuid::uuid4(),
-                'num' => 1,
-                'direction' => 'East',
-                'route' => 10
-            ];
+            'simulator_id' => Uuid::uuid4(),
+            'num' => 1,
+            'direction' => 'East',
+            'route' => 10
+        ];
         $this->runValidRequest($data);
     }
 
@@ -85,16 +86,20 @@ class NupticControllerTest extends TestCase
     {
         return [
             [
-                ['simulator_id' => Uuid::uuid4(),
-                'num' => 1,
-                'direction' => 'East',
-                'route' => 10]
+                [
+                    'simulator_id' => Uuid::uuid4(),
+                    'num' => 1,
+                    'direction' => 'East',
+                    'route' => 10
+                ]
             ],
             [
-                ['simulator_id' => Uuid::uuid4(),
-                'num' => 2,
-                'direction' => 'North',
-                'route' => 20]
+                [
+                    'simulator_id' => Uuid::uuid4(),
+                    'num' => 2,
+                    'direction' => 'North',
+                    'route' => 20
+                ]
             ]
         ];
     }

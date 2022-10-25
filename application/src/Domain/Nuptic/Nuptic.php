@@ -35,11 +35,23 @@ final class Nuptic
         $this->route = $route;
         $this->createdAt = new DateTimeImmutable();
 
-        $this->events[] = NupticWasCreated::fromNuptic($this);
+        /** @var NupticWasCreatedRepresentation $representation */
+        $representation = $this->representedAs(new NupticWasCreatedRepresentation());
+        $this->events[] = NupticWasCreated::fromNuptic($representation);
     }
 
     public function getEvents(): array
     {
         return $this->events;
+    }
+
+    public function representedAs(NupticRepresentation $representation): NupticRepresentation
+    {
+        return $representation->setNupticId($this->nupticId)
+                ->setSimulatorId($this->simulatorId)
+                ->setNum($this->num)
+                ->setDirection($this->direction)
+                ->setRoute($this->route)
+                ->setCreatedAt($this->createdAt);
     }
 }

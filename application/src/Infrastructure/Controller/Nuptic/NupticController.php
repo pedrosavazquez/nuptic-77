@@ -8,6 +8,7 @@ namespace App\Infrastructure\Controller\Nuptic;
 use App\Application\Nuptic\Command\RegisterNupticCommand;
 use App\Application\Shared\Bus\Command\CommandBus;
 use Exception;
+use JsonException;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,10 @@ final class NupticController
     )
     {}
 
-    #[Route('/nuptic77', 'nuptic77', methods: [Request::METHOD_GET])]
+    /**
+     * @throws JsonException
+     */
+    #[Route('/nuptic-77', 'nuptic77', methods: [Request::METHOD_GET])]
     public function __invoke(Request $request): JsonResponse
     {
         ($this->failureProvoker)();
@@ -51,10 +55,10 @@ final class NupticController
                 $contentBody['route'],
             );
 
-            $this->commandBus->execute($command);
-            return new JsonResponse(['data' => ['id' => $id]]);
         } catch (Exception) {
             throw RequestNotValid::forBodyContent();
         }
+        $this->commandBus->execute($command);
+        return new JsonResponse(['data' => ['id' => $id]]);
     }
 }
