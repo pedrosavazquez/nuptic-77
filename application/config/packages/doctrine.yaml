@@ -1,7 +1,7 @@
 doctrine:
     dbal:
         driver: 'pdo_mysql'
-        server_version: '5.7'
+        server_version: '10.6.2'
         url: '%env(resolve:DATABASE_URL)%'
 
         charset: utf8mb4
@@ -9,6 +9,8 @@ doctrine:
             collate: utf8mb4_unicode_ci
         types:
             nupticId: App\Infrastructure\Persistence\Doctrine\CustomType\NupticIdType
+            num: App\Infrastructure\Persistence\Doctrine\CustomType\NumType
+            route: App\Infrastructure\Persistence\Doctrine\CustomType\RouteType
     orm:
         auto_generate_proxy_classes: true
         default_entity_manager: default
