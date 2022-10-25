@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Nuptic\Command;
+namespace App\Application\Nuptic\Command\RegisterNuptic;
 
 use App\Application\Shared\Bus\Command\CommandHandler;
 use App\Application\Shared\Bus\Event\EventBus;

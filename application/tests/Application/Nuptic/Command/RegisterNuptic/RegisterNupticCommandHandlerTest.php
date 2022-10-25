@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application\Nuptic\Command;
+namespace App\Tests\Application\Nuptic\Command\RegisterNuptic;
 
-use App\Application\Nuptic\Command\RegisterNupticCommand;
-use App\Application\Nuptic\Command\RegisterNupticCommandHandler;
+use App\Application\Nuptic\Command\RegisterNuptic\RegisterNupticCommand;
+use App\Application\Nuptic\Command\RegisterNuptic\RegisterNupticCommandHandler;
 use App\Application\Shared\Bus\Event\EventBus;
 use App\Domain\Nuptic\NupticWasCreated;
 use App\Domain\Nuptic\NupticWriteRepository;

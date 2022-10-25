@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Controller\Nuptic;
 
 
-use App\Application\Nuptic\Command\RegisterNupticCommand;
+use App\Application\Nuptic\Command\RegisterNuptic\RegisterNupticCommand;
 use App\Application\Shared\Bus\Command\CommandBus;
 use Exception;
 use JsonException;

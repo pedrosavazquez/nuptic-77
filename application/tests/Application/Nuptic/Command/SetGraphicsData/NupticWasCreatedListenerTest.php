@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application\Nuptic\ResumeData;
+namespace App\Tests\Application\Nuptic\Command\SetGraphicsData;
 
-use App\Application\Nuptic\ResumeData\NupticWasCreatedListener;
+use App\Application\Nuptic\Command\SetGraphicsData\NupticWasCreatedListener;
 use App\Domain\Nuptic\Direction;
 use App\Domain\Nuptic\Num;
 use App\Domain\Nuptic\Nuptic;
@@ -20,7 +20,6 @@ use PHPUnit\Framework\TestCase;
 
 final class NupticWasCreatedListenerTest extends TestCase
 {
-
     private const SOUTH = 'South';
     private const NORTH = 'North';
     private const EAST = 'East';
@@ -51,7 +50,7 @@ final class NupticWasCreatedListenerTest extends TestCase
             self::NORTH => 0,
             self::WEST => 0,
             self::EAST => 0,
-            "Route" => 10,
+            "Route" => ["1" => 10]
         ];
         $this->cacheRepository->expects(self::once())->method('get')->willReturn(json_encode($returnData));
         $nuptic = NupticMother::create(
@@ -65,10 +64,10 @@ final class NupticWasCreatedListenerTest extends TestCase
             self::NORTH => 0,
             self::WEST => 0,
             self::EAST => 1,
-            "Route" => 25,
+            "Route" => ["1" => 10, "2" => 15]
         ];
         $jsonEncode = json_encode($dataToStore, JSON_THROW_ON_ERROR, 512);
-        $todayKey = 'resumeData' . (new DateTimeImmutable())->format('Ymd');
+        $todayKey = 'graphicsData_' . (new DateTimeImmutable())->format('Ymd');
         $this->cacheRepository->expects(self::once())->method('set')->with($todayKey, $jsonEncode);
 
         $this->runListener($nuptic);
