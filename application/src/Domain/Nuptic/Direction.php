@@ -26,6 +26,11 @@ final class Direction
         $this->direction = $direction;
     }
 
+    public function __toString(): string
+    {
+        return $this->direction;
+    }
+
     private function isValidDirectionOrFail(string $direction): void
     {
         if (!in_array($direction, self::VALID_DIRECTIONS)) {

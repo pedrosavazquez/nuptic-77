@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace App\Domain\Nuptic;
 
-final class Num
+use App\Domain\Shared\Entity\IntVO;
+
+final class Num implements IntVO
 {
     private const MIN_VALUE = 1;
     private const MAX_VALUE = 60;
 
-    public readonly int $num;
+    public readonly int $value;
 
     private function __construct(int $num)
     {
         $this->isValidNumOrFail($num);
-        $this->num = $num;
+        $this->value = $num;
+    }
+
+    public function toInt(): int
+    {
+        return $this->value;
     }
 
     private function isValidNumOrFail(int $num): void
@@ -24,7 +31,7 @@ final class Num
         }
     }
 
-    public static function fromInt(int $num): self
+    public static function fromInt(int $num): static
     {
         return new self($num);
     }

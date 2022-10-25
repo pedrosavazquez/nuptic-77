@@ -4,17 +4,24 @@ declare(strict_types=1);
 
 namespace App\Domain\Nuptic;
 
-final class Route
+use App\Domain\Shared\Entity\IntVO;
+
+final class Route implements IntVO
 {
     private const MIN_VALUE = 1;
     private const MAX_VALUE = 60;
 
-    public readonly int $route;
+    public readonly int $value;
 
     private function __construct(int $route)
     {
         $this->isValidNumOrFail($route);
-        $this->route = $route;
+        $this->value = $route;
+    }
+
+    public function toInt(): int
+    {
+        return $this->value;
     }
 
     private function isValidNumOrFail(int $route): void
@@ -24,7 +31,7 @@ final class Route
         }
     }
 
-    public static function fromInt(int $route): self
+    public static function fromInt(int $route): static
     {
         return new self($route);
     }
