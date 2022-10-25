@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Nuptic\Command\ResumeData;
+namespace App\Application\Nuptic\Command\SetResumeData;
 
 use App\Domain\Nuptic\NupticWasCreated;
 use App\Domain\Shared\Cache\CacheRepository;

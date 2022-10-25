@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Application\Nuptic\Command\ResumeData;
+namespace App\Tests\Application\Nuptic\Command\SetResumeData;
 
-use App\Application\Nuptic\Command\ResumeData\NupticWasCreatedListener;
+use App\Application\Nuptic\Command\SetResumeData\NupticWasCreatedListener;
 use App\Domain\Nuptic\Direction;
 use App\Domain\Nuptic\Num;
 use App\Domain\Nuptic\Nuptic;
