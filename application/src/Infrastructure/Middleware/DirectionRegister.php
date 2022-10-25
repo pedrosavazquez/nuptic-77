@@ -16,8 +16,12 @@ final class DirectionRegister implements MiddlewareInterface
 {
     private const EAST = 'East';
 
-    public function __construct(private readonly LoggerInterface $busLogger)
-    {}
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerInterface $directionLogger)
+    {
+        $this->logger = $directionLogger;
+    }
 
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
@@ -87,6 +91,6 @@ final class DirectionRegister implements MiddlewareInterface
             return;
         }
 
-        $this->busLogger->info($logMessage, $context);
+        $this->logger->info($logMessage, $context);
     }
 }
