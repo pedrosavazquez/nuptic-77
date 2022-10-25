@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Infrastructure\Controller\Nuptic;
 
 use App\Application\Shared\Bus\Command\CommandBus;
+use App\Application\Shared\Bus\Query\QueryBus;
 use App\Infrastructure\Controller\Nuptic\FailureProvoker;
 use App\Infrastructure\Controller\Nuptic\NupticController;
 use App\Infrastructure\Controller\Nuptic\RequestNotValid;
@@ -19,12 +20,14 @@ class NupticControllerTest extends TestCase
 {
     private NupticController $controller;
     private MockObject|CommandBus $commandBus;
+    private MockObject|QueryBus $queryBus;
 
     protected function setUp(): void
     {
         $this->commandBus = $this->createMock(CommandBus::class);
+        $this->queryBus = $this->createMock(QueryBus::class);
         $this->failureProvoker = $this->createMock(FailureProvoker::class);
-        $this->controller = new NupticController($this->commandBus, $this->failureProvoker);
+        $this->controller = new NupticController($this->commandBus, $this->queryBus, $this->failureProvoker);
     }
 
 
@@ -72,6 +75,36 @@ class NupticControllerTest extends TestCase
         $this->controller->__invoke($request);
     }
 
+    public function testMustFailIfQueryBusFails(): void
+    {
+        $this->expectException(Exception::class);
+        $requestData = [
+            'simulator_id' => Uuid::uuid4(),
+            'num' => 60,
+            'direction' => 'East',
+            'route' => 10
+        ];
+        $this->queryBus->method('execute')->willThrowException(new Exception());
+        $response = $this->runValidRequest($requestData);
+        $content = json_decode($response->getContent(), associative: true);
+    }
+
+    public function testMustPassIfResponseIncludesResumeDataOnNumSixty(): void
+    {
+        $requestData = [
+            'simulator_id' => Uuid::uuid4(),
+            'num' => 60,
+            'direction' => 'East',
+            'route' => 10
+        ];
+        $this->queryBus->method('execute')->willReturn(['Direction' => 'East', 'Route' => 115]);
+        $response = $this->runValidRequest($requestData);
+        $content = json_decode($response->getContent(), associative: true);
+        self::assertArrayHasKey('data', $content);
+        self::assertArrayHasKey('id', $content['data']);
+        self::assertArrayHasKey('resume_data', $content['data']);
+        self::assertTrue(Uuid::isValid($content['data']['id']));
+    }
 
     private function runValidRequest(array $requestContent): JsonResponse
     {
