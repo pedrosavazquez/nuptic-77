@@ -14,7 +14,6 @@ framework:
                     - 'App\Infrastructure\Middleware\DirectionRegister'
             query.bus:
                 default_middleware: allow_no_handlers
-
             event.bus:
                 default_middleware: allow_no_handlers
                 middleware:

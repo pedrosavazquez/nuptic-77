@@ -15,14 +15,4 @@ final class RegisterNupticCommand extends Command
         public readonly string $direction,
         public readonly int $route,
     ) {}
-
-    public function jsonSerialize() : array
-    {
-         return [
-              'simulator_id' => $this->simulatorId,
-              'num' => $this->num,
-              'direction' => $this->direction,
-              'route' => $this->route,
-        ];
-    }
 }
