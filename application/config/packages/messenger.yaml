@@ -11,13 +11,14 @@ framework:
                     - doctrine_ping_connection
                     - doctrine_close_connection
                     - doctrine_transaction
+                    - 'App\Infrastructure\Middleware\DirectionRegister'
             query.bus:
                 default_middleware: allow_no_handlers
-                middleware:
-                    - App\Infrastructure\Middleware\DirectionRegister
 
             event.bus:
                 default_middleware: allow_no_handlers
+                middleware:
+                    - 'App\Infrastructure\Middleware\EventLogger'
 
         transports:
             commands_sync: 'sync://'

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Middleware;
 
+use App\Application\Nuptic\Command\RegisterNuptic\RegisterNupticCommand;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
@@ -26,8 +27,8 @@ final class DirectionRegister implements MiddlewareInterface
     public function handle(Envelope $envelope, StackInterface $stack): Envelope
     {
         $message = $envelope->getMessage();
-
-        if (self::EAST !== $message->direction) {
+        dump($message);
+        if (false === $message instanceof RegisterNupticCommand || self::EAST !== $message->direction) {
             return $stack->next()->handle($envelope, $stack);
         }
 

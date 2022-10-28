@@ -2,6 +2,7 @@ monolog:
     channels:
         - deprecation # Deprecations are logged in the dedicated "deprecation" channel when it exists
         - direction
+        - event
 when@dev:
     monolog:
         handlers:
@@ -15,6 +16,11 @@ when@dev:
                 path: "%kernel.logs_dir%/%kernel.environment%.direction.log"
                 level: debug
                 channels: ["direction"]
+            event:
+                type: stream
+                path: "%kernel.logs_dir%/%kernel.environment%.event.log"
+                level: debug
+                channels: ["event"]
             console:
                 type: console
                 process_psr_3_messages: false
