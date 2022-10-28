@@ -1,0 +1,4 @@
+#get request to retrieve graphics data
+#@no-log
+GET http://localhost:8080/nuptic-77/graphs-data
+Content-Type: application/json

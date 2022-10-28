@@ -17,7 +17,7 @@ final class GetGraphsDataController
     {
     }
 
-    #[Route('/nuptic-77/graphsData', 'graphsData', methods: [Request::METHOD_GET])]
+    #[Route('/nuptic-77/graphs-data', 'graphsData', methods: [Request::METHOD_GET])]
     public function __invoke(): JsonResponse
     {
         $graphicsData = $this->queryBus->execute(new GetGraphsDataQuery());
