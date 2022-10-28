@@ -6,7 +6,7 @@ namespace App\Domain\Nuptic;
 
 use App\Domain\Shared\Bus\Event\DomainEvent;
 
-final class NupticWasCreated implements DomainEvent
+final class NupticWasCreated extends DomainEvent
 {
     public function __construct(
         public readonly string $simulatorId,

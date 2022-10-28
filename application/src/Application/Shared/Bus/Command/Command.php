@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\Shared\Bus\Command;
 
-use JsonSerializable;
+use App\Application\Shared\Bus\BusMessage;
 
-interface Command extends JsonSerializable
+abstract class Command extends BusMessage
 {
 
 }

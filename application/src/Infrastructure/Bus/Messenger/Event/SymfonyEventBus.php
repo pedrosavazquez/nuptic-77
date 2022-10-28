@@ -6,12 +6,10 @@ namespace App\Infrastructure\Bus\Messenger\Event;
 
 use App\Application\Shared\Bus\Event\EventBus;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
-use Symfony\Component\Messenger\HandleTrait;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 final class SymfonyEventBus implements EventBus
 {
-    use HandleTrait;
 
     public function __construct(MessageBusInterface $eventBus)
     {

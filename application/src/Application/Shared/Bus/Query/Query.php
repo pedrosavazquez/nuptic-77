@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Application\Shared\Bus\Query;
 
-interface Query
+use App\Application\Shared\Bus\BusMessage;
+
+abstract class Query extends BusMessage
 {
 
 }

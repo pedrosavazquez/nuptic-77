@@ -6,7 +6,7 @@ namespace App\Application\Nuptic\Command\RegisterNuptic;
 
 use App\Application\Shared\Bus\Command\Command;
 
-final class RegisterNupticCommand implements Command
+final class RegisterNupticCommand extends Command
 {
     public function __construct(
         public readonly string $id,
