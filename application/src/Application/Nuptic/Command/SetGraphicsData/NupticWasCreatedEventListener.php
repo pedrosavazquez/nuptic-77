@@ -8,7 +8,7 @@ use App\Domain\Nuptic\NupticWasCreated;
 use App\Domain\Shared\Cache\CacheRepository;
 use DateTimeImmutable;
 
-final class NupticWasCreatedListener
+final class NupticWasCreatedEventListener
 {
     private const GRAPHICS_DATA = 'graphicsData_';
     private const SOUTH = 'South';
