@@ -36,5 +36,12 @@ services:
         tags:
             - { name: messenger.message_handler, bus: query.bus }
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    event_listeners:
+        namespace: App\Application\
+        resource: '%kernel.project_dir%/src/Application/**/*EventListener.php'
+        autoconfigure: false
+        tags:
+            - { name: messenger.message_handler, bus: event.bus }
+
+
+    Redis: '@snc_redis.default'
