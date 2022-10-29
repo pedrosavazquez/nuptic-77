@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Nuptic\Query\GetGraphsData;
 
+use DateTimeImmutable;
 use Redis;
 
 final class GetGraphsDataQueryHandler
@@ -14,9 +15,13 @@ final class GetGraphsDataQueryHandler
     {
     }
 
+    /**
+     * @throws \RedisException
+     * @throws \JsonException
+     */
     public function __invoke(GetGraphsDataQuery $query): array
     {
-        $todayDate = (new \DateTimeImmutable())->format('Ymd');
+        $todayDate = (new DateTimeImmutable())->format('Ymd');
         $graphsData = $this->redis->get(self::GRAPHICS_DATA.$todayDate);
 
         return json_decode($graphsData, true, 512, JSON_THROW_ON_ERROR);

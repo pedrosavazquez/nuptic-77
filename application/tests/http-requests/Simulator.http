@@ -1,6 +1,6 @@
-#get request to simulator endpoint
+#post request to simulator endpoint
 #@no-log
-GET http://localhost:8080/nuptic-77
+POST http://localhost:8080/nuptic-77
 Content-Type: application/json
 
 {

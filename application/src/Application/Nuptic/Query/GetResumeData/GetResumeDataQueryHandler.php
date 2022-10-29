@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Nuptic\Query\GetResumeData;
 
+use DateTimeImmutable;
 use Redis;
 
 final class GetResumeDataQueryHandler
@@ -16,8 +17,8 @@ final class GetResumeDataQueryHandler
 
     public function __invoke(GetResumeDataQuery $query): array
     {
-        $todayDate = (new \DateTimeImmutable())->format('Ymd');
-        $resumeData = $this->redis->get(self::RESUME_DATA .$todayDate);
+        $todayDate = (new DateTimeImmutable())->format('Ymd');
+        $resumeData = json_decode($this->redis->get(self::RESUME_DATA .$todayDate), true, 512, JSON_THROW_ON_ERROR);
         return $this->getData($resumeData);
     }
 
@@ -25,7 +26,7 @@ final class GetResumeDataQueryHandler
     {
         $route = $resumeData['Route'];
         unset($resumeData['Route']);
-        arsort($resumeData);
-        return ['Route' => $route, 'Direction' => array_key_first($resumeData)];
+        arsort($resumeData['Direction']);
+        return ['Route' => $route, 'Direction' => array_key_first($resumeData['Direction'])];
     }
 }

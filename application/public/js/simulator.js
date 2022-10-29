@@ -73,6 +73,7 @@ class GraphicInfo {
             this.#printGraphicsInfo();
             await sleep(this.#DELAY);
         }while(RequestSimulator.requestsInProgress);
+        this.#printGraphicsInfo();
     }
 
     async #printGraphicsInfo() {
@@ -126,6 +127,7 @@ class GraphicInfo {
 function startSimulation() {
     let simulator = new RequestSimulator();
     simulator.start();
+    sleep(1000);
     let graphics = new GraphicInfo();
     graphics.start();
 }

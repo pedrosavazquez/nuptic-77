@@ -13,7 +13,7 @@ class FailureProvoker
      */
     public function __invoke(): void
     {
-        if (10 < random_int(1, 100)) {
+        if (90 < random_int(1, 100)) {
             throw new ProgrammedError();
         }
     }

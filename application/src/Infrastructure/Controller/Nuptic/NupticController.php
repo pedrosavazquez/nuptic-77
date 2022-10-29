@@ -28,7 +28,7 @@ final class NupticController
     /**
      * @throws JsonException
      */
-    #[Route('/nuptic-77', 'nuptic77', methods: [Request::METHOD_GET])]
+    #[Route('/nuptic-77', 'nuptic77', methods: Request::METHOD_POST)]
     public function __invoke(Request $request): JsonResponse
     {
         ($this->failureProvoker)();

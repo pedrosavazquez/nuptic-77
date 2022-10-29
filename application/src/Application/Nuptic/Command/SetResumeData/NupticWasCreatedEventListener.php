@@ -15,6 +15,8 @@ final class NupticWasCreatedEventListener
     private const NORTH = 'North';
     private const EAST = 'East';
     private const WEST = 'West';
+    private const DIRECTION = 'Direction';
+    private const ROUTE = 'Route';
 
     public function __construct(private readonly Redis $redis)
     {
@@ -28,19 +30,21 @@ final class NupticWasCreatedEventListener
         }
 
         $storedData = json_decode($this->redis->get($todayKey), true, 512, JSON_THROW_ON_ERROR);
-        $storedData[$event->direction] += 1;
-        $storedData["Route"] += $event->route;
+        $storedData[self::DIRECTION][$event->direction] += 1;
+        $storedData[self::ROUTE] += $event->route;
         $this->redis->set($todayKey, json_encode($storedData, JSON_THROW_ON_ERROR, 512));
     }
 
     private function resetData(string $todayKey): void
     {
         $resetData = [
-            self::SOUTH => 0,
-            self::NORTH => 0,
-            self::WEST => 0,
-            self::EAST => 0,
-            "Route" => 0
+            self::DIRECTION => [
+                self::SOUTH => 0,
+                self::NORTH => 0,
+                self::WEST => 0,
+                self::EAST => 0,
+            ],
+            self::ROUTE => 0
         ];
         $this->redis->set(
             $todayKey,
