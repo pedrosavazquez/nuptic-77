@@ -125,6 +125,9 @@ class GraphicInfo {
 }
 
 function startSimulation() {
+    if(RequestSimulator.requestsInProgress) {
+        return;
+    }
     let simulator = new RequestSimulator();
     simulator.start();
     sleep(1000);
