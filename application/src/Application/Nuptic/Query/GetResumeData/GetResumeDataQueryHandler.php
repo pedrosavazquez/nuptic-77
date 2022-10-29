@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Application\Nuptic\Query\GetResumeData;
 
-use App\Domain\Shared\Cache\CacheRepository;
+use Redis;
 
 final class GetResumeDataQueryHandler
 {
     private const RESUME_DATA = 'resumeData';
 
-    public function __construct(private readonly CacheRepository $cacheRepository)
+    public function __construct(private readonly Redis $redis)
     {
     }
 
     public function __invoke(GetResumeDataQuery $query): array
     {
         $todayDate = (new \DateTimeImmutable())->format('Ymd');
-        $resumeData = $this->cacheRepository->get(self::RESUME_DATA .$todayDate);
+        $resumeData = $this->redis->get(self::RESUME_DATA .$todayDate);
         return $this->getData($resumeData);
     }
 

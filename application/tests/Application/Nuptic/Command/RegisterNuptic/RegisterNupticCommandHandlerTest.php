@@ -9,11 +9,11 @@ use App\Application\Nuptic\Command\RegisterNuptic\RegisterNupticCommandHandler;
 use App\Application\Shared\Bus\Event\EventBus;
 use App\Domain\Nuptic\NupticWasCreated;
 use App\Domain\Nuptic\NupticWriteRepository;
-use App\Domain\Shared\Cache\CacheRepository;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
+use Redis;
 
 
 final class RegisterNupticCommandHandlerTest extends TestCase
@@ -21,14 +21,14 @@ final class RegisterNupticCommandHandlerTest extends TestCase
     private RegisterNupticCommandHandler $handler;
     private MockObject|NupticWriteRepository $nupticRepository;
     private EventBus|MockObject $eventBus;
-    private MockObject|CacheRepository $cacheRepository;
+    private MockObject|Redis $redis;
 
     protected function setUp(): void
     {
         $this->nupticRepository = $this->createMock(NupticWriteRepository::class);
         $this->eventBus = $this->createMock(EventBus::class);
-        $this->cacheRepository = $this->createMock(CacheRepository::class);
-        $this->handler = new RegisterNupticCommandHandler($this->nupticRepository, $this->eventBus, $this->cacheRepository);
+        $this->redis = $this->createMock(Redis::class);
+        $this->handler = new RegisterNupticCommandHandler($this->nupticRepository, $this->eventBus, $this->redis);
     }
 
     public function testMustFailIfRepositoryFails(): void
@@ -69,7 +69,7 @@ final class RegisterNupticCommandHandlerTest extends TestCase
     {
         $this->expectException(Exception::class);
         $this->nupticRepository->expects(self::once())->method('save');
-        $this->cacheRepository->expects(self::once())->method('incr')->willThrowException(new Exception());
+        $this->redis->expects(self::once())->method('incr')->willThrowException(new Exception());
 
         $this->runHandler();
     }

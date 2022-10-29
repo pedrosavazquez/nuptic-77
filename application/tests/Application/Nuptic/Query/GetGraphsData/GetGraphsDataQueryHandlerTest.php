@@ -6,10 +6,10 @@ namespace App\Tests\Application\Nuptic\Query\GetGraphsData;
 
 use App\Application\Nuptic\Query\GetGraphsData\GetGraphsDataQuery;
 use App\Application\Nuptic\Query\GetGraphsData\GetGraphsDataQueryHandler;
-use App\Domain\Shared\Cache\CacheRepository;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Redis;
 
 final class GetGraphsDataQueryHandlerTest extends TestCase
 {
@@ -19,18 +19,18 @@ final class GetGraphsDataQueryHandlerTest extends TestCase
     private const WEST = 'West';
 
     private GetGraphsDataQueryHandler $handler;
-    private CacheRepository|MockObject $cacheRepository;
+    private Redis|MockObject $redis;
 
     protected function setUp(): void
     {
-        $this->cacheRepository = $this->createMock(CacheRepository::class);
-        $this->handler = new GetGraphsDataQueryHandler($this->cacheRepository);
+        $this->redis = $this->createMock(Redis::class);
+        $this->handler = new GetGraphsDataQueryHandler($this->redis);
     }
 
     public function testMustFailIfRepositoryFails(): void
     {
         $this->expectException(Exception::class);
-        $this->cacheRepository->method('get')->willThrowException(new Exception());
+        $this->redis->method('get')->willThrowException(new Exception());
 
         $this->handler->__invoke(new GetGraphsDataQuery());
     }
@@ -44,7 +44,7 @@ final class GetGraphsDataQueryHandlerTest extends TestCase
             self::EAST => 1,
             "Route" => ['1' => 10, '2' => 10, '3' => 15, '4' => 11, '5' => 12]
         ];
-        $this->cacheRepository->method('get')->willReturn(json_encode($returnedData, JSON_THROW_ON_ERROR, 512));
+        $this->redis->method('get')->willReturn(json_encode($returnedData, JSON_THROW_ON_ERROR, 512));
         $response = $this->handler->__invoke(new GetGraphsDataQuery());
         self::assertEqualsCanonicalizing($returnedData, $response);
     }

@@ -13,8 +13,8 @@ use App\Domain\Nuptic\NupticId;
 use App\Domain\Nuptic\NupticWriteRepository;
 use App\Domain\Nuptic\Route;
 use App\Domain\Nuptic\SimulatorId;
-use App\Domain\Shared\Cache\CacheRepository;
 use DateTimeImmutable;
+use Redis;
 
 final class RegisterNupticCommandHandler implements CommandHandler
 {
@@ -23,7 +23,7 @@ final class RegisterNupticCommandHandler implements CommandHandler
     public function __construct(
         private readonly NupticWriteRepository $nupticRepository,
         private readonly EventBus $eventBus,
-        private readonly CacheRepository $cacheRepository,
+        private readonly Redis $redis,
         )
     {
 
@@ -42,7 +42,7 @@ final class RegisterNupticCommandHandler implements CommandHandler
         $this->nupticRepository->save($nuptic);
 
         $date = (new DateTimeImmutable())->format('Ymd');
-        $this->cacheRepository->incr(self::CACHE_KEY.$date);
+        $this->redis->incr(self::CACHE_KEY.$date);
         $this->eventBus->handleBatch($nuptic->getEvents());
     }
 }

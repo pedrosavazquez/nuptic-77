@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Application\Nuptic\Command\SetGraphicsData;
 
 use App\Domain\Nuptic\NupticWasCreated;
-use App\Domain\Shared\Cache\CacheRepository;
 use DateTimeImmutable;
+use Redis;
 
 final class NupticWasCreatedEventListener
 {
@@ -16,7 +16,7 @@ final class NupticWasCreatedEventListener
     private const EAST = 'East';
     private const WEST = 'West';
 
-    public function __construct(private readonly CacheRepository $cacheRepository)
+    public function __construct(private readonly Redis $redis)
     {
     }
 
@@ -27,13 +27,13 @@ final class NupticWasCreatedEventListener
             $this->resetData($todayKey);
         }
 
-        $storedData = json_decode($this->cacheRepository->get($todayKey), true, 512, JSON_THROW_ON_ERROR);
+        $storedData = json_decode($this->redis->get($todayKey), true, 512, JSON_THROW_ON_ERROR);
         $storedData[$event->direction] += 1;
         $storedData["Route"][$event->num] = $event->route;
 
         $valueToStore = json_encode($storedData, JSON_THROW_ON_ERROR, 512);
 
-        $this->cacheRepository->set($todayKey, $valueToStore);
+        $this->redis->set($todayKey, $valueToStore);
     }
 
     private function resetData(string $todayKey): void
@@ -45,7 +45,7 @@ final class NupticWasCreatedEventListener
             self::EAST => 0,
             "Route" => []
         ];
-        $this->cacheRepository->set(
+        $this->redis->set(
             $todayKey,
             json_encode($resetData, JSON_THROW_ON_ERROR, 512)
         );

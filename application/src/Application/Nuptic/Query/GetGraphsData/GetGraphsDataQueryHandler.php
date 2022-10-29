@@ -4,19 +4,20 @@ declare(strict_types=1);
 
 namespace App\Application\Nuptic\Query\GetGraphsData;
 
-use App\Domain\Shared\Cache\CacheRepository;
+use Redis;
 
 final class GetGraphsDataQueryHandler
 {
+    private const GRAPHICS_DATA = 'graphicsData_';
 
-    public function __construct(private readonly CacheRepository $cacheRepository)
+    public function __construct(private readonly Redis $redis)
     {
     }
 
     public function __invoke(GetGraphsDataQuery $query): array
     {
         $todayDate = (new \DateTimeImmutable())->format('Ymd');
-        $graphsData = $this->cacheRepository->get($todayDate);
+        $graphsData = $this->redis->get(self::GRAPHICS_DATA.$todayDate);
 
         return json_decode($graphsData, true, 512, JSON_THROW_ON_ERROR);
     }

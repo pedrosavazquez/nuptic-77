@@ -4,15 +4,12 @@ snc_redis:
             type: phpredis
             alias: default
             dsn: '%env(REDIS_URL)%'
-        session:
+            logging: '%kernel.debug%'
+        cache:
             type: phpredis
-            alias: session
+            alias: cache
             dsn: '%env(REDIS_URL)%'
+            logging: '%kernel.debug%'
             options:
-                prefix: session_
-        db:
-            type: phpredis
-            alias: db
-            dsn: '%env(REDIS_URL)%'
-            options:
-                prefix: _db
+                connection_timeout: 10
+                read_write_timeout: 30

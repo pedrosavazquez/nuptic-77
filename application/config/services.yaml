@@ -43,5 +43,5 @@ services:
         tags:
             - { name: messenger.message_handler, bus: event.bus }
 
+    Redis: '@snc_redis.cache'
 
-    Redis: '@snc_redis.default'

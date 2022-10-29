@@ -11,12 +11,12 @@ use App\Domain\Nuptic\Nuptic;
 use App\Domain\Nuptic\NupticWasCreated;
 use App\Domain\Nuptic\NupticWasCreatedRepresentation;
 use App\Domain\Nuptic\Route;
-use App\Domain\Shared\Cache\CacheRepository;
 use App\Tests\Application\Nuptic\NupticMother;
 use DateTimeImmutable;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Redis;
 
 final class NupticWasCreatedEventListenerTest extends TestCase
 {
@@ -26,19 +26,19 @@ final class NupticWasCreatedEventListenerTest extends TestCase
     private const EAST = 'East';
     private const WEST = 'West';
     private NupticWasCreatedEventListener $listener;
-    private CacheRepository|MockObject $cacheRepository;
+    private Redis|MockObject $redis;
 
     protected function setUp(): void
     {
-        $this->cacheRepository = $this->createMock(CacheRepository::class);
-        $this->listener = new NupticWasCreatedEventListener($this->cacheRepository);
+        $this->redis = $this->createMock(Redis::class);
+        $this->listener = new NupticWasCreatedEventListener($this->redis);
     }
 
     public function testMustFailIfRedisFailToReset(): void
     {
         $this->expectException(Exception::class);
-        $this->cacheRepository->method('set')->willThrowException(new Exception());
-        $this->cacheRepository->expects(self::never())->method('get');
+        $this->redis->method('set')->willThrowException(new Exception());
+        $this->redis->expects(self::never())->method('get');
 
         $nuptic = NupticMother::create(num: Num::fromInt(1));
         $this->runListener($nuptic);
@@ -53,7 +53,7 @@ final class NupticWasCreatedEventListenerTest extends TestCase
             self::EAST => 0,
             "Route" => 10,
         ];
-        $this->cacheRepository->expects(self::once())->method('get')->willReturn(json_encode($returnData));
+        $this->redis->expects(self::once())->method('get')->willReturn(json_encode($returnData));
         $nuptic = NupticMother::create(
             direction: Direction::fromString(self::EAST),
             num: Num::fromInt(2),
@@ -69,7 +69,7 @@ final class NupticWasCreatedEventListenerTest extends TestCase
         ];
         $jsonEncode = json_encode($dataToStore, JSON_THROW_ON_ERROR, 512);
         $todayKey = 'resumeData' . (new DateTimeImmutable())->format('Ymd');
-        $this->cacheRepository->expects(self::once())->method('set')->with($todayKey, $jsonEncode);
+        $this->redis->expects(self::once())->method('set')->with($todayKey, $jsonEncode);
 
         $this->runListener($nuptic);
     }

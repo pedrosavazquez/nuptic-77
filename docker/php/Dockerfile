@@ -20,6 +20,10 @@ RUN apt update \
 RUN docker-php-ext-configure gd --with-jpeg \
   && docker-php-ext-install intl gd mbstring;
 
+RUN apt update \
+    && apt install redis-tools php-redis \
+    && apt clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*;
+
 RUN pecl install xdebug redis && docker-php-ext-enable xdebug redis
 
 RUN apt update \

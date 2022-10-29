@@ -28,7 +28,7 @@ final class EventLogger implements MiddlewareInterface
         $context = [
             'message' => $this->getClassName($message),
             'content' => (string)$message,
-            'class' => $message::class,
+            'class' => get_class($message),
         ];
 
         [$envelope, $exception] = $this->passMessageToNextHandler($envelope, $stack);
@@ -42,7 +42,7 @@ final class EventLogger implements MiddlewareInterface
 
     private function getClassName($message): string
     {
-        $fullName = $message::class;
+        $fullName = get_class($message);
 
         $parts = explode('\\', $fullName);
 
@@ -72,9 +72,26 @@ final class EventLogger implements MiddlewareInterface
             $logMessage = 'Handling';
         }
 
-        if (null === $exception) {
-            $logMessage .= ' {message} {content}';
+        if (null !== $exception) {
+            if ($exception->getPrevious()) {
+                $logMessage .= sprintf(
+                    ' {message} failed because %s (%s). {content}',
+                    $this->getClassName($exception->getPrevious()),
+                    $exception->getPrevious()
+                        ->getMessage()
+                );
+            } else {
+                $logMessage .= sprintf(
+                    ' {message} failed because %s (%s). {content}',
+                    $this->getClassName($exception),
+                    $exception->getMessage()
+                );
+            }
+
+            return $logMessage;
         }
+
+        $logMessage .= ' {message} {content}';
 
         return $logMessage;
     }
@@ -82,7 +99,8 @@ final class EventLogger implements MiddlewareInterface
     private function logMessageAndPassException(string $logMessage, array $context, ?Throwable $exception): void
     {
         if ($exception) {
-            return;
+            $this->logger->error($logMessage, $context);
+            throw $exception;
         }
 
         $this->logger->info($logMessage, $context);

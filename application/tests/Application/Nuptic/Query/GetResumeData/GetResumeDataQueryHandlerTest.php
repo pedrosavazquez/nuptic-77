@@ -6,10 +6,10 @@ namespace App\Tests\Application\Nuptic\Query\GetResumeData;
 
 use App\Application\Nuptic\Query\GetResumeData\GetResumeDataQuery;
 use App\Application\Nuptic\Query\GetResumeData\GetResumeDataQueryHandler;
-use App\Domain\Shared\Cache\CacheRepository;
 use Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Redis;
 
 final class GetResumeDataQueryHandlerTest extends TestCase
 {
@@ -19,25 +19,25 @@ final class GetResumeDataQueryHandlerTest extends TestCase
     private const WEST = 'West';
 
     private GetResumeDataQueryHandler $handler;
-    private MockObject|CacheRepository $cacheRepository;
+    private MockObject|Redis $redis;
 
     protected function setUp(): void
     {
-        $this->cacheRepository = $this->createMock(CacheRepository::class);
-        $this->handler = new GetResumeDataQueryHandler($this->cacheRepository);
+        $this->redis = $this->createMock(Redis::class);
+        $this->handler = new GetResumeDataQueryHandler($this->redis);
     }
 
     public function testMustFailIfCacheRepositoryFails(): void
     {
         $this->expectException(Exception::class);
-        $this->cacheRepository->method('get')->willThrowException(new Exception());
+        $this->redis->method('get')->willThrowException(new Exception());
 
         $this->runHandler();
     }
 
     public function testMustPassWhenReturnDirectionWithHighestRepetition(): void
     {
-        $this->cacheRepository->method('get')->willReturn([
+        $this->redis->method('get')->willReturn([
             self::SOUTH => 10,
             self::NORTH => 5,
             self::WEST => 40,
