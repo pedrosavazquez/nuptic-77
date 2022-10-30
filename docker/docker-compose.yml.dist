@@ -5,16 +5,29 @@ services:
     build:
       context: "mysql"
       dockerfile: Dockerfile
+      args:
+        - LOCAL_UID=${LOCAL_UID}
+        - LOCAL_GID=${LOCAL_GID}
+    container_name: cqrs-mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DB_NAME}
       - MYSQL_USER=${DB_USER}
       - MYSQL_PASSWORD=${DB_PASSWORD}
+    ports:
+      - "3306:3306"
     networks:
       - backend
-  php:
-    build:
-      context: "php"
+  redis:
+    image: redis
+    container_name: cqrs-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+  php: 
+    build: 
+      context: "php" 
       dockerfile: Dockerfile
       args:
          - LOCAL_UID=${LOCAL_UID}
@@ -25,11 +38,13 @@ services:
       - PHP_IDE_CONFIG=serverName=localhost
     volumes:
       - ./php/php-ini-overrides.ini:/usr/local/etc/php/conf.d/infrastructure-overrides.ini
+      - ./php/www.conf:/etc/php/8.1/fpm/pool.d/www.conf
       - ../${SYMFONY_APP_PATH}:${WORKING_DIR}
     networks:
       - backend
     depends_on:
       - db
+      - redis
   web:
     image: nginx:alpine
     working_dir: ${WORKING_DIR}
