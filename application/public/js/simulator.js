@@ -44,11 +44,8 @@ class RequestSimulator {
         ).then( response => response.json() )
             .then( json => json )
             .catch( error => {
-                console.log(error);
                 this.#doCall(data);
-            })
-            ;
-
+            });
     }
 
     #printResumeData(route, direction) {
@@ -77,28 +74,36 @@ class GraphicInfo {
     }
 
     async #printGraphicsInfo() {
-        if(this.#routeChart !== null) {
+        let response = await fetch(this.#URL, {method: 'get'}).then(response => response.json());
+        let routeInfo = response['data']['Route'];
+        let routeConfig = this.#getGraphicConfig(routeInfo, 'line', 'Graphic Route');
+        let directionInfo = response['data']['Direction'];
+        let directionConfig = this.#getGraphicConfig(directionInfo, 'bar', 'Graphic direction');
+
+        if(this.#routeChart !== null && routeInfo.length === 1) {
             this.#routeChart.destroy();
-        }
-        if(this.#directionChart !== null) {
             this.#directionChart.destroy();
         }
-        let response = await fetch(this.#URL, {method: 'get'}).then(response => response.json());
-        let routeInfo = this.#getRouteConfig(response['data']['Route'], 'line', 'Graphic Route');
-        let directionInfo = this.#getRouteConfig(response['data']['Direction'], 'bar', 'Graphic direction');
 
-        this.#routeChart = new Chart(
-            document.getElementById('route'),
-            routeInfo
-        );
+        if(this.#routeChart === null){
+            this.#routeChart = new Chart(
+                document.getElementById('route'),
+                routeConfig
+            );
 
-        this.#directionChart = new Chart(
-            document.getElementById('direction'),
-            directionInfo,
-        );
+            this.#directionChart = new Chart(
+                document.getElementById('direction'),
+                directionConfig,
+            );
+
+            return;
+        }
+
+        this.#updateDirectionChart(directionInfo, this.#directionChart);
+        this.#updateDirectionChart(routeInfo, this.#routeChart);
     }
 
-    #getRouteConfig(simulationInfo, graphType, graphName) {
+    #getGraphicConfig(simulationInfo, graphType, graphName) {
         let labels = [];
         let routeData = [];
         for(let key in simulationInfo)
@@ -111,6 +116,18 @@ class GraphicInfo {
             labels: labels,
             datasets: [{
                 label: graphName,
+                borderColor: [
+                    'rgba(255,0,0,1)',
+                    'rgba(0,255,0,1)',
+                    'rgba(0,0,255,1)',
+                    'rgba(125,125,125,1)',
+                ],
+                backgroundColor: [
+                    'rgba(255,0,0,0.2)',
+                    'rgba(0,255,0,0.2)',
+                    'rgba(0,0,255,0.2)',
+                    'rgba(125,125,125,0.2)',
+                ],
                 data: routeData,
             }]
         };
@@ -122,6 +139,14 @@ class GraphicInfo {
             }
         };
     }
+
+    #updateDirectionChart(simulationInfo, chart) {
+        const data = chart.data;
+        data.labels = Object.keys(simulationInfo);
+        data.datasets[0].data = Object.values(simulationInfo);
+
+        chart.update();
+    }
 }
 
 function startSimulation() {
@@ -130,7 +155,6 @@ function startSimulation() {
     }
     let simulator = new RequestSimulator();
     simulator.start();
-    sleep(1000);
     let graphics = new GraphicInfo();
     graphics.start();
 }
