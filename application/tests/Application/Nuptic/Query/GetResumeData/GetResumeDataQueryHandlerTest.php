@@ -37,13 +37,16 @@ final class GetResumeDataQueryHandlerTest extends TestCase
 
     public function testMustPassWhenReturnDirectionWithHighestRepetition(): void
     {
-        $this->redis->method('get')->willReturn([
-            self::SOUTH => 10,
-            self::NORTH => 5,
-            self::WEST => 40,
-            self::EAST => 5,
+        $returnedData = [
+            "Direction" => [
+                self::SOUTH => 10,
+                self::NORTH => 5,
+                self::WEST => 40,
+                self::EAST => 5,
+            ],
             "Route" => 115
-        ]);
+        ];
+        $this->redis->method('get')->willReturn(json_encode($returnedData, JSON_THROW_ON_ERROR, 512));
 
         $response = $this->runHandler();
         $expectedResponse = ['Direction' => self::WEST, 'Route' => 115];

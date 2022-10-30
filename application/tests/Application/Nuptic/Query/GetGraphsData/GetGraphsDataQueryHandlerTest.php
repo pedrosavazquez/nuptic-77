@@ -38,10 +38,12 @@ final class GetGraphsDataQueryHandlerTest extends TestCase
     public function testMustPassIfReturnsRequiredData(): void
     {
         $returnedData = [
-            self::SOUTH => 1,
-            self::NORTH => 3,
-            self::WEST => 0,
-            self::EAST => 1,
+            "Direction" => [
+                self::SOUTH => 1,
+                self::NORTH => 3,
+                self::WEST => 0,
+                self::EAST => 1,
+            ],
             "Route" => ['1' => 10, '2' => 10, '3' => 15, '4' => 11, '5' => 12]
         ];
         $this->redis->method('get')->willReturn(json_encode($returnedData, JSON_THROW_ON_ERROR, 512));

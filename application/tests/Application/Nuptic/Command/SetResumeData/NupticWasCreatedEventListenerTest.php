@@ -20,11 +20,13 @@ use Redis;
 
 final class NupticWasCreatedEventListenerTest extends TestCase
 {
-
     private const SOUTH = 'South';
     private const NORTH = 'North';
     private const EAST = 'East';
     private const WEST = 'West';
+    private const DIRECTION = "Direction";
+    private const ROUTE = "Route";
+
     private NupticWasCreatedEventListener $listener;
     private Redis|MockObject $redis;
 
@@ -47,25 +49,29 @@ final class NupticWasCreatedEventListenerTest extends TestCase
     public function testMustPassIfResetIsNotDone(): void
     {
         $returnData = [
-            self::SOUTH => 1,
-            self::NORTH => 0,
-            self::WEST => 0,
-            self::EAST => 0,
-            "Route" => 10,
+            self::DIRECTION => [
+                self::SOUTH => 1,
+                self::NORTH => 0,
+                self::WEST => 0,
+                self::EAST => 0,
+            ],
+            self::ROUTE => 10,
         ];
         $this->redis->expects(self::once())->method('get')->willReturn(json_encode($returnData));
         $nuptic = NupticMother::create(
-            direction: Direction::fromString(self::EAST),
             num: Num::fromInt(2),
+            direction: Direction::fromString(self::EAST),
             route: Route::fromInt(15)
         );
 
         $dataToStore = [
-            self::SOUTH => 1,
-            self::NORTH => 0,
-            self::WEST => 0,
-            self::EAST => 1,
-            "Route" => 25,
+            self::DIRECTION => [
+                self::SOUTH => 1,
+                self::NORTH => 0,
+                self::WEST => 0,
+                self::EAST => 1,
+            ],
+            self::ROUTE => 25,
         ];
         $jsonEncode = json_encode($dataToStore, JSON_THROW_ON_ERROR, 512);
         $todayKey = 'resumeData' . (new DateTimeImmutable())->format('Ymd');
